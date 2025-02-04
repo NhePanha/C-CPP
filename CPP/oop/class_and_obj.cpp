@@ -1,30 +1,32 @@
+#ifndef CAR_H
+#define CAR_H
+
 #include <iostream>
-#include <iomanip> // for setw() function
+#include <iomanip>
+
 using namespace std;
-// create class
-class Car{
-    private:
-        int id;
-        string model;
-        double price;
-    public:
-        void Input()
-        {
-            cout<<"Enter Car ID : ";cin>>id;
-            cout<<"Enter Car Model : ";cin>>model;
-            cout<<"Enter Car Price : ";cin>>price;
-        }
-        void Output(){
-            cout<<left<<setw(12)<<id<<
-            setw(12)<<model<<
-            setw(12)<<price<<endl;
-        }
+
+class Car {
+private:
+    int id;
+    string model;
+    double price;
+
+public:
+    void Input() {
+        cout << "Enter Car ID: ";
+        cin >> id;
+        cout << "Enter Car Model: ";
+        cin >> model;
+        cout << "Enter Car Price: ";
+        cin >> price;
+    }
+
+    void Output() {
+        cout << left << setw(12) << id
+             << setw(12) << model
+             << setw(12) << price << endl;
+    }
 };
-int main()
-{
-    // create object
-    Car car;
-    car.Input();
-    car.Output();
-    return 0;
-}
+
+#endif Car.h
