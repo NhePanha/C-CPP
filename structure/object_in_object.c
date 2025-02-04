@@ -43,6 +43,5 @@ int main()
     printf("Total Score : %.2lf\n",person.student.calculate.total);
     printf("Average Score : %.2lf\n",person.student.calculate.average);
     printf("Grade : %c\n",person.student.calculate.grade);
-
     return 0;
 }
