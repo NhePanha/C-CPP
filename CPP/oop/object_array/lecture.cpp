@@ -11,15 +11,31 @@ class Lecture{
     public:
     // block methods
         // properties set
-        void setCode(int c){code = c;}
-        void setName(string n){name = n;}
-        void setGender(string g){gender = g;}
-        void setSubject(string s){subject = s;}
+        void setCode(int c){
+            code = c;
+        }
+        void setName(string n){
+            name = n;
+        }
+        void setGender(string g){
+            gender = g;
+        }
+        void setSubject(string s){
+            subject = s;
+        }
         // properties get
-        int getCode(){return code;}
-        string getName(){return name;}
-        string getGender(){return gender;}
-        string getSubject(){return subject;}
+        int getCode(){
+            return code;
+        }
+        string getName(){
+            return name;
+        }
+        string getGender(){
+            return gender;
+        }
+        string getSubject(){
+            return subject;
+        }
         // functions
         void AddLecture();
         void ShowLecture();
@@ -116,6 +132,54 @@ void UpdateLecture(Lecture lec[],int n)
         cout<<"Update successfully....!"<<endl;
     }
 }
+// pass by reference
+void DeleteLecture(Lecture lec[],int *n)
+{
+    int deletecode;
+    bool check = false;
+    cout<<"Enter code to delete : ";cin >> deletecode;
+    for(i=0;i<*n;i++)
+    {
+        if(lec[i].getCode()==deletecode)
+        {
+            for(int j = i ; j < *n - 1; j++)
+            {
+                lec[j] = lec[j+1];
+                check = true;
+            }
+            (*n)--;
+            cout<<"Delete successfully....!"<<endl;
+            return; // exit function 
+        }
+    }
+    if(!check)
+    {
+        cout<<"Lecture not found....!"<<endl;
+    }
+}
+void SortLecture(Lecture lec[],int *n)
+{
+    bool check = false;
+    for(int i=0; i<*n-1; i++)
+    {
+        for(int j=0; j<*n-i-1; j++)
+        {
+            if(lec[j].getCode() > lec[j+1].getCode())
+            {
+                swap(lec[j],lec[j+1]);
+                check = true;
+            }
+        }
+    }
+    if(check)
+    {
+        cout<<"Sort successfully....!"<<endl;
+    }
+    else
+    {
+        cout<<"No need to sort....!"<<endl;
+    }
+}
 int main()
 {
     // create object the array
@@ -129,7 +193,7 @@ int main()
         cout<<"[4. Update Lecture]"<<endl;
         cout<<"[5. Delete Lecture]"<<endl;
         cout<<"[6. Sort Lecture  ]"<<endl;
-        cout<<"[0. Exit         ]"<<endl;
+        cout<<"[0. Exit          ]"<<endl;
         cout<<"Enter Your Choice : ";cin>>op;
         switch(op)
         {
@@ -156,6 +220,12 @@ int main()
             case 4:{
                 cout<<"=============[ Update Lecture]==============="<<endl;
                 UpdateLecture(lec,n);
+            }break;
+            case 5:{
+                DeleteLecture(lec,&n);
+            }break;
+            case 6:{
+                SortLecture(lec,&n);
             }break;
         }
     }while(op!=0);
