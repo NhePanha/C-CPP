@@ -157,6 +157,7 @@ void DeleteLecture(Lecture lec[],int *n)
         cout<<"Lecture not found....!"<<endl;
     }
 }
+//pass by reference
 void SortLecture(Lecture lec[],int *n)
 {
     bool check = false;
