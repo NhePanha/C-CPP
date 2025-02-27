@@ -27,4 +27,5 @@ int main()
     Person per(1001,"dara","male");
     per.Ouptut();
     return 0;
+    
 }
