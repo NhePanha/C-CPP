@@ -8,7 +8,6 @@
 #define GREEN   "\033[32m"
 #define YELLOW  "\033[33m"
 #define BLUE    "\033[34m"
-
 using namespace std;
 // storage for product
 fstream storage;
@@ -32,7 +31,7 @@ void Register::Sign_Up()
         cout << RED << "Error Opening File!" << RESET << endl;
         return;
     }
-    cout << GREEN << "============ SIGN UP ============" << RESET << endl;
+    cout << GREEN << "============ SIGN UP ============" << RESET << endl;cin.ignore();
     cout << BLUE << "| Enter Username   : | " << RESET; cin.getline(usernae,100);
     cout << BLUE << "| Enter Email      : | " << RESET; cin.getline(email,100);
     cout << BLUE << "| Enter Password   : | " << RESET; cin.getline(password,100);
@@ -77,63 +76,51 @@ class Product{
         double discount;
         bool status;
         double total_price;
+        double payment;
     public:
+    // block methods
+        int getId()
+        {
+            return id;
+        }
+        string getName()
+        {
+            return name;
+        }
         void Add_Product();
         void Display_Product();
 };
 void Product::Add_Product()
 {
-    storage.open("products.bin", ios::app|ios::binary);
-    if (!storage.is_open()) {
-        cout << RED << "Error Opening File!" << RESET << endl;
-        return;
-    }
     cout << GREEN << "============ ADD PRODUCT ============" << RESET << endl;
     cout << BLUE << "| Enter ID          : | " << RESET; cin >> id;
     cout << BLUE << "| Enter Name        : | " << RESET; cin.ignore();getline(cin, name);
     cout << BLUE << "| Enter Price       : | " << RESET; cin >> price;
     cout << BLUE << "| Enter Quantity    : | " << RESET; cin >> quantity;
-    cout << BLUE << "| Enter Discount (%) : | " << RESET; cin >> discount;
-    status = true;
-    total_price = price * quantity * (1);
-    storage.write((char*)&id, sizeof(id));
-    storage.write((char*)&name, sizeof(name));
-    storage.write((char*)&price, sizeof(price));
-    storage.write((char*)&quantity, sizeof(quantity));
-    storage.write((char*)&discount, sizeof(discount));
-    storage.write((char*)&status, sizeof(status));
-    storage.write((char*)&total_price, sizeof(total_price));
-    storage.close();
+    cout << BLUE << "| Enter Discount (%): | " << RESET; cin >> discount;
+    total_price = price - (price * discount / 100);
+    payment = total_price - (total_price * discount / 100);
 }
 void Product::Display_Product()
 {
-    storage.open("products.bin",ios::in|ios::binary);
-    if (!storage.is_open()) {
-        cout << RED << "Error Opening File!" << RESET << endl;
-        return;
-    }
-    int stored_id;
-    string stored_name;
-    double stored_price, stored_discount;
-    int stored_quantity;
-    double stored_total_price;
-    bool stored_status;
-    while(storage.read((char*)&stored_id, sizeof(stored_id))){
-        storage.read((char*)&stored_name, sizeof(stored_name));
-        storage.read((char*)&stored_price, sizeof(stored_price));
-        storage.read((char*)&stored_quantity, sizeof(stored_quantity));
-        storage.read((char*)&stored_discount, sizeof(stored_discount));
-        storage.read((char*)&stored_status, sizeof(stored_status));
-        storage.read((char*)&stored_total_price, sizeof(stored_total_price));
-        if(stored_status){
-            cout<<BLUE<<setw(12)<<stored_id<<
-            setw(12)<<stored_name<<
-            setw(12)<<stored_price<<
-            setw(12)<<stored_quantity<<
-            setw(12)<<stored_discount<<
-            setw(12)<<stored_total_price<<endl;
-        }
-    }
+    cout<<BLUE << setw(12)<<id<<
+    setw(12)<<name<<
+    setw(12)<<price<<
+    setw(12)<<quantity<<
+    setw(12)<<discount<<
+    setw(12)<<total_price<<
+    setw(12)<<payment<<endl;
+        
+}
+void Header()
+{
+    cout<<RED<<setw(12)<<"CODE"<<
+    setw(12)<<"NAME"<<
+    setw(12)<<"PRICE"<<
+    setw(12)<<"QUANTITY"<<
+    setw(12)<<"DISCOUNT(%)"<<
+    setw(12)<<"TOTAL PRICE"<<
+    setw(12)<<"PAYMENT"<<endl;
 }
 int main()
 {
@@ -153,7 +140,7 @@ int main()
             case 2:
                 reg.Sign_In();
                 if(check_login){
-                    Product p;
+                    Product pro;
                     vector<Product> products;
                     int choice,i,n;
                     do{
@@ -161,25 +148,58 @@ int main()
                         cout << GREEN<< "[ 1 - Write Product   ]\n";
                         cout << GREEN<< "[ 2 - Read Product    ]\n";
                         cout << GREEN<< "[ 3 - Search Product  ]\n";
-                        cout << GREEN<< "[ 3 - Update Produ    ]\n";
-                        cout << GREEN<< "[ 3 - Delete Product  ]\n";
-                        cout << GREEN<< "[ 3 - Sort Product    ]\n";
-                        cout << GREEN<< "[ 3 - Add Product     ]\n";
+                        cout << GREEN<< "[ 4 - Update Produ    ]\n";
+                        cout << GREEN<< "[ 5 - Delete Product  ]\n";
+                        cout << GREEN<< "[ 6 - Sort Product    ]\n";
+                        cout << GREEN<< "[ 7 - Add Product     ]\n";
                         cout << RED<< "==========================================" << endl;
                         cout << GREEN<< "Enter your choice : "; cin >> choice;
                         switch(choice){
                             case 1:{
-                                cout << GREEN << "Enter the number of products to add: "; cin >> n;
-                                for(int i=0; i< n;i++){
-                                    products[i].Add_Product();
-                                    products.push_back(p);
+                                storage.open("storages.bin",ios::app|ios::binary);
+                                if(!storage.is_open()){
+                                    cout << RED << "Error Opening File!" << RESET << endl;
+                                    return 1;
+                                }
+                                cout<<"Enter Number of Product : ";cin>>n;
+                                for(i=0;i<n;i++)
+                                {
+                                    pro.Add_Product();
+                                    storage.write((char*)&pro, sizeof(pro));
+                                    storage.close();
                                 }
                             }break;
                             case 2:{
-                                for(auto p : products){
-                                    p.Display_Product();
+                                storage.open("storages.bin",ios::in|ios::binary);
+                                if (!storage.is_open()) {
+                                    cout << "Error Opening File!" << endl;
+                                    return 1;
                                 }
+                                Header();
+                                while (storage.read(reinterpret_cast<char*>(&pro), sizeof(Product))) {
+                                    pro.Display_Product();
+                                }
+                                storage.close();
                             }break;
+                            case 3:{
+                                int search_id;
+                                bool check = false;
+                                storage.open("storages.bin",ios::in|ios::binary);
+                                if (!storage.is_open()) {
+                                    cout << "Error Opening File!" << endl;
+                                    return 1;
+                                }
+                                cout << "Enter Product ID To Search.. : "; cin >> search_id;
+                                Header();
+                                while (storage.read(reinterpret_cast<char*>(&pro), sizeof(Product))) {
+                                    if(search_id == pro.getId())
+                                    {
+                                        pro.Display_Product();
+                                    }
+                                }
+                                storage.close();
+                            }break;
+
                         }
                     }while(choice!=0);
                 }
